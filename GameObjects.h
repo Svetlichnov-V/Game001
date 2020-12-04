@@ -70,7 +70,7 @@ public:
 		}
 	}
 
-	StorageImages(StorageImages& stImages)
+	StorageImages(const StorageImages& stImages)
 	{
 		name = stImages.name;
 		delete[] images;
@@ -87,7 +87,7 @@ public:
 		delete[] images;
 	}
 
-	StorageImages& operator = (StorageImages& stImages)
+	StorageImages& operator = (const StorageImages& stImages)
 	{
 		name = stImages.name;
 		delete[] images;
@@ -260,6 +260,12 @@ public:
 	virtual void nullChangeImpulse() {}
 
 	virtual void gravitation(Vector2f g, float dt) {}
+
+
+
+	virtual String getOrientation() { return "NULL"; }
+
+	virtual void getDamage(int damage) {};
 };
 
 
@@ -352,10 +358,11 @@ public:
 };
 
 
+
 class StdGameObject: public GameObject
 {
 protected:
-
+	
 	Sprite* sprite;
 	String nameCurrentImage;
 	int indexCurrentImage;
@@ -374,12 +381,19 @@ protected:
 	//int numberOfVertex;
 
 	int hitPoints = 10;
-
-	StdGameObject() {};
-
+	
 public:
 
 	//Vector2f changeImpulse = Vector2f(0, 0);
+
+	StdGameObject()
+	{
+		if (!vertexs)
+		{
+			//std::cout << 1 << '\n';
+			vertexs = new Vector2f[1];
+		}
+	};
 
 	void setSize(Vector2f size)
 	{
@@ -388,7 +402,7 @@ public:
 		characteristicSize = max(size.x, size.y);
 	}
 
-	StdGameObject(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs, 
+	StdGameObject(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
 		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass)
 	{
 		//std::cout << "StdGameObject1" << '\n';
@@ -420,7 +434,7 @@ public:
 		this->setSize(size);
 	}
 
-	StdGameObject(StdGameObject& gameObject)
+	StdGameObject(const StdGameObject& gameObject)
 	{
 		std::cout << "StdGameObject2" << '\n';
 
@@ -448,18 +462,27 @@ public:
 		delete[] vertexs;
 	}
 
-	StdGameObject& operator = (StdGameObject& gameObject)
+	StdGameObject& operator = (const StdGameObject& gameObject)
 	{
-		delete[] vertexs;
+		if (vertexs)
+			delete[] vertexs;
 		sprite = gameObject.sprite;
 		numberOfVertexs = gameObject.numberOfVertexs;
 		vertexs = new Vector2f[numberOfVertexs];
 		nameCurrentImage = gameObject.nameCurrentImage;
 		indexCurrentImage = gameObject.indexCurrentImage;
 		size = gameObject.size;
+
+		position = gameObject.position;
+		velosity = gameObject.velosity;
+		mass = gameObject.mass;
+		centerMass = gameObject.centerMass;
+
 		//rightBottomCorrow = position + size;
 		for (int i = 0; i < numberOfVertexs; i++)
 			this->vertexs[i] = vertexs[i];
+
+		return *this;
 	}
 
 	void setCurrentImage(String name, int index)
@@ -504,7 +527,7 @@ public:
 		camera->draw(&shape, sf::Vector2f(position.x, position.y) , characteristicSize);
 	}
 	
-	void animation(float timeBeetweenFrame) 
+	void animation(float timeBeetweenFrame)
 	{
 		timeFromLastChangeImage += timeBeetweenFrame;
 		if (timeFromLastChangeImage > timeBeetweenImages)
@@ -522,9 +545,8 @@ public:
 
 	Vector2f getPositionVertex(int number)
 	{
-		//std::cout << number << ' ' << numberOfVertexs << '\n';
 		assert(number < numberOfVertexs);
-		return vertexs[number] + position;
+		return position + vertexs[number];
 	}
 
 	Vector2f getVertex(int number)
@@ -980,6 +1002,18 @@ public:
 
 		if (dp < 0)
 			changeImpulse -= 2 * dp * vectorCollision;
+	}
+
+	void changeOrientation(String orient)
+	{
+		if ((orient != "left") && (orient != "right"))
+			assert(false);
+		orientation = orient;
+	}
+
+	String getOrientation()
+	{
+		return orientation;
 	}
 };
 

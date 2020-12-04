@@ -49,8 +49,14 @@ public:
 		head = new Node{ object, head };
 	}
 
-	void DeleteObject(String name)
+	void DeleteObject(const String name)
 	{
+		if (head == NULL)
+		{
+			std::cout << "There is no object with name : " << name << std::endl;
+			return;
+		}
+
 		Node* pointer = head;
 		if (head->object->name == name)
 		{

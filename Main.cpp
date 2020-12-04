@@ -25,6 +25,16 @@ int main()
 	camera.setFrameralLimit(60);
 
 
+	String paintsFairBalls[1];
+	paintsFairBalls[0] = "fairBall.png";
+
+	StorageImages stImFB[2]{ StorageImages("left", 1, paintsFairBalls), StorageImages("right", 1, paintsFairBalls) };
+
+	Sprite spFB(stImFB, 2);
+
+	Logic logic(&storage, &camera, &spFB);
+
+
 	
 	Vector2f downWallVertexs[4];
 	downWallVertexs[0] = Vector2f(0, 0);
@@ -74,7 +84,7 @@ int main()
 						   Vector2f(32, 64), Vector2f(32, 48), Vector2f(32, 32), Vector2f(32, 16),
 						   Vector2f(32, 0),  Vector2f(24, 0),  Vector2f(16, 0),  Vector2f(8,   0) };
 
-	Player Elve ("Elve",  Vector2f(415, 587), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Player Elve ("Player",  Vector2f(415, 587), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 
 	Elve.setVelosity(Vector2f(30, 0));
 
@@ -129,6 +139,7 @@ int main()
 	float time2 = clock.getElapsedTime().asSeconds();
 
 	float dt;
+
 
 	while (camera.isOpen())
 	{
