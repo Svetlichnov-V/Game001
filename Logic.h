@@ -2,6 +2,16 @@
 #include "GameObjects.h"
 #include "Storage.h"
 
+
+String ch(int i)
+{
+	char c = static_cast<char>(i);
+	char s[2];
+	s[0] = c;
+	s[1] = '\0';
+	return String(s);
+}
+
 class Logic
 {
 	//StdGameObject* fairBalls;
@@ -23,27 +33,64 @@ public:
 
 	void work()
 	{
+		Iterator iter(storage);
+		while (true)
+		{
+			GameObject& gameObject = iter.stepIteration();
 
+			if (gameObject.name == "NULL")
+				break;
+			
+			if (gameObject.name.len() != 9)
+				continue;
+
+			String name("", 9);
+
+			for (int i = 0; i < 8; i++)
+				name += gameObject.name[i];
+			name[8] = '\0';
+
+			if (name != "fairBall")
+				continue;
+
+			Iterator iter1(storage);
+			while (true)
+			{
+				GameObject& gObj = iter1.stepIteration();
+				if (gObj.name == "NULL")
+					break;
+				
+				bool collide = this->fairBallIsCollide(gameObject, gObj);
+				if (collide)
+				{
+					this->explosionFairBall(gameObject, gObj);
+					if (!(this->checkIsLive(gObj)))
+						this->destructionObject(gObj);
+				}
+			}
+		}
 	}
 
 	void createFairBall()
 	{
-		String name = String("fairBall") + String(char(iter));
 
-		//std::cout << name << '\n';
+		String name = String("fairBall") + ch(iter);
+		iter += 1;
+
+		std::cout << name << '\n';
 
 		Vector2f position;
 		GameObject& player = (*storage)["Player"];
 		if (player.getOrientation() == "left")
-			position = player.position + Vector2f(-32, 8);
+			position = player.position + Vector2f(-34, 8);
 		if (player.getOrientation() == "right")
-			position = player.position + Vector2f(32, 8);
+			position = player.position + Vector2f(34, 8);
 		assert((player.getOrientation() != "left") && (player.getOrientation() == "right"));
 
 		Vector2f vertexs[4] = { Vector2f(0, 0), Vector2f(0, 16), Vector2f(16, 16), Vector2f(16, 0) };
 
 		//std::cout << 0 << '\n';
-		StdGameObject* fairBall = new StdGameObject (name, position, sprite, vertexs, 4, player.getOrientation(), Vector2f(16, 16), Vector2f(8, 8), 1);
+		StdGameObject* fairBall = new StdGameObject (name, position, sprite, vertexs, 4, player.getOrientation(), Vector2f(16, 16), Vector2f(8, 8), -1);
 
 		Vector2f mousePosition = sf::Mouse::getPosition();
 		Vector2f velosity = -50 * (position + Vector2f(8, 8) - mousePosition).norm();
@@ -51,25 +98,25 @@ public:
 		storage->AddObject(fairBall);
 	}
 
-	bool fairBallIsCollide(StdGameObject& fairBall)
+	bool fairBallIsCollide(GameObject& fairBall, GameObject& gm)
 	{
-		Vector2f v(0, 0);
-
-		Iterator iter(storage);
-		while (true)
-		{
-			GameObject& gObj = iter.stepIteration();
-			if (gObj.name == "NULL")
-				break;
-			v += fairBall.isCollide(gObj);
-		}
-
+		Vector2f v = fairBall.isCollide(gm);
 		return v.mod();
 	}
 
-	void explosionFairBall(StdGameObject& fb, GameObject& gm)
+	void explosionFairBall(GameObject& fairBall, GameObject& gm)
 	{
 		gm.getDamage(3);
-		storage->DeleteObject[fb.name];
+		storage->DeleteObject(fairBall.name);
+	}
+
+	bool checkIsLive(GameObject& gm)
+	{
+		return gm.getHitPoints();
+	}
+
+	void destructionObject(GameObject gm)
+	{
+		storage->DeleteObject(gm.name);
 	}
 };

@@ -140,6 +140,7 @@ int main()
 
 	float dt;
 
+	int i = 0;
 
 	while (camera.isOpen())
 	{
@@ -193,6 +194,14 @@ int main()
 			gameObject.changeVelosity();
 		}
 		camera.display();
+
+		if (i == 200)
+		{
+			i = 0;
+			logic.createFairBall();
+		}
+		logic.work();
+		i++;
 	};
 	
 	return 0;

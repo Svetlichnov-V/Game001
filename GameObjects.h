@@ -266,6 +266,8 @@ public:
 	virtual String getOrientation() { return "NULL"; }
 
 	virtual void getDamage(int damage) {};
+
+	virtual int getHitPoints() { return 1; }
 };
 
 
