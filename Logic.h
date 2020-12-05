@@ -73,28 +73,28 @@ public:
 
 	void createFairBall()
 	{
+		if (iter = 256)
+			iter = 0;
 
 		String name = String("fairBall") + ch(iter);
 		iter += 1;
 
-		std::cout << name << '\n';
-
 		Vector2f position;
 		GameObject& player = (*storage)["Player"];
 		if (player.getOrientation() == "left")
-			position = player.position + Vector2f(-34, 8);
+			position = player.position + Vector2f(-18, 8);
 		if (player.getOrientation() == "right")
 			position = player.position + Vector2f(34, 8);
 		assert((player.getOrientation() != "left") && (player.getOrientation() == "right"));
 
 		Vector2f vertexs[4] = { Vector2f(0, 0), Vector2f(0, 16), Vector2f(16, 16), Vector2f(16, 0) };
 
-		//std::cout << 0 << '\n';
 		StdGameObject* fairBall = new StdGameObject (name, position, sprite, vertexs, 4, player.getOrientation(), Vector2f(16, 16), Vector2f(8, 8), -1);
 
 		Vector2f mousePosition = sf::Mouse::getPosition();
 		Vector2f velosity = -50 * (position + Vector2f(8, 8) - mousePosition).norm();
 
+		fairBall->setVelosity(velosity);
 		storage->AddObject(fairBall);
 	}
 
@@ -112,6 +112,7 @@ public:
 
 	bool checkIsLive(GameObject& gm)
 	{
+		std::cout << gm.getHitPoints() << '\n';
 		return gm.getHitPoints();
 	}
 

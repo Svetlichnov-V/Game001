@@ -5,6 +5,7 @@
 #include "String.h"
 #include "Vector2f.h"
 #include "Logic.h"
+#include "Manager.h"
 
 void handlingEvent(Camera* camera)
 {
@@ -67,8 +68,6 @@ int main()
 	rightWallVertexs[3] = Vector2f(400, 0);
 	Wall rightWall("rightWall", Vector2f(1980, 0), rightWallVertexs, 4, Vector2f(0, 1080), 10000);
 	storage.AddObject(&rightWall);
-
-	//std::cout << rightWall.name << '\n';
 	
 
 
@@ -146,22 +145,28 @@ int main()
 	{
 		time1 = clock.getElapsedTime().asSeconds();
 		dt = time1 - time2;
-		//std::cout << 1.0 / (time1 - time2);
 		time2 = time1;
-		//std::cout << "\n";
 
 		handlingEvent(&camera);
-		
-		//std::cout << storage["Elve"].isCollide(storage["downWall"]) << '\n';
 
-		Iterator iter(&storage);
+		drawManager(&camera, &storage, dt);
+
+		Iterator iter5(&storage);
 		while (true)
 		{
-			GameObject& gameObject = iter.stepIteration();
+			GameObject& gameObject = iter5.stepIteration();
 			if (gameObject.name == "NULL")
 				break;
-			gameObject.draw(&camera);
-			gameObject.animation(dt);
+			gameObject.nullChangeImpulse();
+		}
+
+		Iterator iter3(&storage);
+		while (true)
+		{
+			GameObject& gameObject = iter3.stepIteration();
+			if (gameObject.name == "NULL")
+				break;
+			gameObject.gravitation(g, dt);
 		}
 
 		Iterator iter2(&storage);
@@ -170,7 +175,6 @@ int main()
 			GameObject& gameObject = iter2.stepIteration();
 			if (gameObject.name == "NULL")
 				break;
-			gameObject.nullChangeImpulse();
 			Iterator iter1(&storage);
 			while (true)
 			{
@@ -179,20 +183,19 @@ int main()
 					break;
 				Vector2f v = gameObject.isCollide(gObj);
 				gameObject.resolutionCollision(gObj, v);
-				//std::cout << gameObject.name << ' ' << gameObject.changeImpulse << '\n';
 			}
 		}
 
-		Iterator iter3(&storage);
+		Iterator iter4(&storage);
 		while(true)
 		{
-			GameObject& gameObject = iter3.stepIteration();
+			GameObject& gameObject = iter4.stepIteration();
 			if (gameObject.name == "NULL")
 				break;
-			gameObject.gravitation(g, dt);
 			gameObject.move(dt);
 			gameObject.changeVelosity();
 		}
+
 		camera.display();
 
 		if (i == 200)
