@@ -255,6 +255,8 @@ public:
 	virtual void getDamage(int damage) {};
 
 	virtual int getHitPoints() { return 1; }
+
+	virtual String getTypeName() { return "GameObject"; }
 };
 
 
@@ -774,18 +776,11 @@ class StationaryCube : public GameObject
 	float timeBeetweenImages = 5;
 
 
-	//Vector2f velosity;
-	//Vector2f changeImpulse = Vector2f(0, 0);
-	//float mass;
-	//Vector2f size;
 	Vector2f centerMass;
-	//Vector2f* vertexs;
-	//int numberOfVertex;
+
 
 
 public:
-
-	//Vector2f changeImpulse = Vector2f(0, 0);
 
 	void setSize(Vector2f size)
 	{
@@ -940,36 +935,10 @@ class Player : public StdGameObject
 public:
 
 	Player(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
-		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass)
-	{
-		//std::cout << "StdGameObject1" << '\n';
-
-		this->name = name;
-		this->position = position;
-		//rightBottomCorrow = position + size;
-		this->sprite = sprite;
-		this->numberOfVertexs = numberOfVertexs;
-		this->vertexs = new Vector2f[numberOfVertexs];
-		this->centerMass = centerMass;
-		this->mass = mass;
-
-		for (int i = 0; i < numberOfVertexs; i++)
-		{
-			this->vertexs[i] = vertexs[i];
-		}
-
-		nameCurrentImage = nameFistStImages;
-
-		//std::cout << nameCurrentImage << '\n';
-
-		indexCurrentImage = 0;
-
-		texture.create(size.x, size.y);
-		texture.update(*(sprite->getImage(nameFistStImages, 0)));   //!!!!!
-		shape.setTexture(&texture);
-
-		this->setSize(size);
-	}
+			int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass) : 
+		StdGameObject(name, position, sprite, vertexs,
+			numberOfVertexs, nameFistStImages, size, centerMass, mass)
+	{}
 
 	void resolutionCollision(GameObject& gObj, Vector2f vectorCollision)
 	{
@@ -1012,36 +981,10 @@ class Knight : public StdGameObject
 public:
 
 	Knight(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
-		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass)
-	{
-		//std::cout << "StdGameObject1" << '\n';
-
-		this->name = name;
-		this->position = position;
-		//rightBottomCorrow = position + size;
-		this->sprite = sprite;
-		this->numberOfVertexs = numberOfVertexs;
-		this->vertexs = new Vector2f[numberOfVertexs];
-		this->centerMass = centerMass;
-		this->mass = mass;
-
-		for (int i = 0; i < numberOfVertexs; i++)
-		{
-			this->vertexs[i] = vertexs[i];
-		}
-
-		nameCurrentImage = nameFistStImages;
-
-		//std::cout << nameCurrentImage << '\n';
-
-		indexCurrentImage = 0;
-
-		texture.create(size.x, size.y);
-		texture.update(*(sprite->getImage(nameFistStImages, 0)));   //!!!!!
-		shape.setTexture(&texture);
-
-		this->setSize(size);
-	}
+		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass) :
+		StdGameObject(name, position, sprite, vertexs,
+			numberOfVertexs, nameFistStImages, size, centerMass, mass)
+	{}
 
 	void resolutionCollision(GameObject& gObj, Vector2f vectorCollision)
 	{
@@ -1063,5 +1006,21 @@ public:
 
 		if (dp < 0)
 			changeImpulse -= 2 * dp * vectorCollision;
+	}
+};
+
+
+class FairBall : public StdGameObject
+{
+public:
+	FairBall(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
+		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass) :
+		StdGameObject(name, position, sprite, vertexs,
+			numberOfVertexs, nameFistStImages, size, centerMass, mass)
+	{}
+
+	String getTypeName()
+	{
+		return "FairBall";
 	}
 };

@@ -150,6 +150,7 @@ int main()
 		handlingEvent(&camera);
 
 		drawManager(&camera, &storage, dt);
+		//camera.display();
 
 		Iterator iter5(&storage);
 		while (true)
@@ -212,3 +213,13 @@ int main()
 
 
 //window.setFramerateLimit(60);
+
+/*
+int main()
+{
+	String str("hyj");
+	String s = ch(2);
+	std::cout << s << ' ' << s.len() << '\n';
+	str += s;
+	std::cout << str << ' ' << str.len() << '\n';
+}*/

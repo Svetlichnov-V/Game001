@@ -53,5 +53,8 @@
     <ClInclude Include="Manager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Interface.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

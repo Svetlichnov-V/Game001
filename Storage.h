@@ -61,7 +61,7 @@ public:
 			head = newHead;
 			return;
 		}
-		while (pointer)
+		while (pointer->next)
 		{
 			if (pointer->next->object->name == name)
 			{

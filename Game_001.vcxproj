@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="Logic.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Storage.h" />

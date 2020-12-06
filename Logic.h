@@ -18,7 +18,7 @@ class Logic
 	Camera* camera;
 	Storage* storage;
 	Sprite* sprite;
-	int iter = 0;
+	int iter = 1;
 public:
 	Logic(Storage* st, Camera* cm, Sprite* sp):
 		storage(st),
@@ -33,6 +33,9 @@ public:
 
 	void work()
 	{
+		this->processingFairBalls();
+		this->deleteObjects();
+		/*
 		Iterator iter(storage);
 		while (true)
 		{
@@ -41,18 +44,19 @@ public:
 			if (gameObject.name == "NULL")
 				break;
 			
-			if (gameObject.name.len() != 9)
+			if (gameObject.name.len() != 10)
 				continue;
 
-			String name("", 9);
+			String name = gameObject.name.copyPart(0, 9);
 
-			for (int i = 0; i < 8; i++)
-				name += gameObject.name[i];
-			name[8] = '\0';
+			std::cout << gameObject.name << ' ' << name << '\n';
 
 			if (name != "fairBall")
 				continue;
 
+			//std::cout << gameObject.name << ' ' << name << '\n';
+
+			std::cout << "jght" << '\n';
 			Iterator iter1(storage);
 			while (true)
 			{
@@ -61,6 +65,7 @@ public:
 					break;
 				
 				bool collide = this->fairBallIsCollide(gameObject, gObj);
+				std::cout << collide << '\n';
 				if (collide)
 				{
 					this->explosionFairBall(gameObject, gObj);
@@ -68,13 +73,60 @@ public:
 						this->destructionObject(gObj);
 				}
 			}
+		}*/
+	}
+
+	void processingFairBalls()
+	{
+		Iterator iter(storage);
+		while (true)
+		{
+			GameObject& gameObject = iter.stepIteration();
+
+			if (gameObject.name == "NULL")
+				break;
+
+			//std::cout << gameObject.getTypeName() << '\n';
+			if (gameObject.getTypeName() != "FairBall")
+				continue;
+
+			Iterator iter1(storage);
+			while (true)
+			{
+				GameObject& gObj = iter1.stepIteration();
+				if (gObj.name == "NULL")
+					break;
+
+				if (gObj.name == gameObject.name)
+					continue;
+
+				bool collide = this->fairBallIsCollide(gameObject, gObj);
+				if (collide)
+				{
+					this->explosionFairBall(gameObject, gObj);
+				}
+			}
+		}
+	}
+
+	void deleteObjects()
+	{
+		Iterator iter1(storage);
+		while (true)
+		{
+			GameObject& gObj = iter1.stepIteration();
+			if (gObj.name == "NULL")
+				break;
+
+			if (!(this->checkIsLive(gObj)))
+				this->destructionObject(gObj);
 		}
 	}
 
 	void createFairBall()
 	{
-		if (iter = 256)
-			iter = 0;
+		if (iter == 256)
+			iter = 1;
 
 		String name = String("fairBall") + ch(iter);
 		iter += 1;
@@ -87,20 +139,22 @@ public:
 			position = player.position + Vector2f(34, 8);
 		assert((player.getOrientation() != "left") && (player.getOrientation() == "right"));
 
-		Vector2f vertexs[4] = { Vector2f(0, 0), Vector2f(0, 16), Vector2f(16, 16), Vector2f(16, 0) };
+		Vector2f vertexs[8] = { Vector2f(0, 0), Vector2f(0, 8), Vector2f(0, 16), Vector2f(8, 16),
+								Vector2f(16, 16), Vector2f(16, 8), Vector2f(16, 0), Vector2f(8, 0) };
 
-		StdGameObject* fairBall = new StdGameObject (name, position, sprite, vertexs, 4, player.getOrientation(), Vector2f(16, 16), Vector2f(8, 8), -1);
+		FairBall* fairBall = new FairBall (name, position, sprite, vertexs, 8, player.getOrientation(), Vector2f(16, 16), Vector2f(8, 8), 1);
 
 		Vector2f mousePosition = sf::Mouse::getPosition();
-		Vector2f velosity = -50 * (position + Vector2f(8, 8) - mousePosition).norm();
+		Vector2f velosity = -120 * (position + Vector2f(8, 8) - mousePosition).norm();
 
 		fairBall->setVelosity(velosity);
 		storage->AddObject(fairBall);
 	}
 
-	bool fairBallIsCollide(GameObject& fairBall, GameObject& gm)
+	bool fairBallIsCollide(GameObject& fb, GameObject& gm)
 	{
-		Vector2f v = fairBall.isCollide(gm);
+		Vector2f v = fb.isCollide(gm);
+		std::cout << v << '\n';
 		return v.mod();
 	}
 
@@ -112,8 +166,7 @@ public:
 
 	bool checkIsLive(GameObject& gm)
 	{
-		std::cout << gm.getHitPoints() << '\n';
-		return gm.getHitPoints();
+		return (gm.getHitPoints() > 0);
 	}
 
 	void destructionObject(GameObject gm)

@@ -2,7 +2,11 @@
 #include <cassert>
 #include <iostream>
 
+class String;
+
 int strLen(const char* str);
+
+std::ostream& operator << (std::ostream& streamP, const String& string);
 
 class String
 {
@@ -69,6 +73,16 @@ public:
 		strSize = len + 1;
 		memorySize = 2 * strSize;
 		str = new char[memorySize];
+		str[len] = '\0';
+	}
+
+	String(const char ch)
+	{
+		strSize = 2;
+		memorySize = 4;
+		str = str = new char[memorySize];
+		str[0] = ch;
+		str[1] = '\0';
 	}
 
 	~String()
@@ -95,7 +109,9 @@ public:
 	bool operator == (String string)
 	{
 		if (strSize != string.strSize)
+		{
 			return false;
+		}
 		for (int i = 0; i < this->len(); i++)
 			if (str[i] != string[i])
 				return false;
@@ -165,54 +181,6 @@ public:
 		return string;
 	}
 
-	/*
-	String& _split(int index)
-	{
-		String string = String(strSize - index - 2);
-		int n = index;
-		for (int i = 0; i < strSize - n; ++i)
-		{
-			string.str[i] = str[i + n];
-		}
-		strSize = index + 1;
-		str[index] = '\0';
-		return string;
-	}
-
-	String** split(int index)
-	{
-		String** strings = new String*[2];
-		strings[0] = this;
-		strings[1] = &String(strSize - index - 2);
-		int n = index;
-		for (int i = 0; i < strSize - n; ++i)
-		{
-			strings[1]->str[i] = str[i + n];
-		}
-		strSize = index + 1;
-		str[index] = '\0';
-		return strings;
-	}
-
-	String** split(char c)
-	{
-		int i = 0;
-		int n = this->countChar(c);
-		String** strings = new String* [n];
-		int number = 1;
-		for (int i = strSize; i > 0; i -= 1)
-		{
-			if (str[i] == c)
-			{
-				strings[number] = &this->_split(i);
-				number += 1;
-			}
-		}
-		strings[0] = this;
-		return strings;
-	}
-	*/
-
 	String operator + (const String& string) const
 	{
 		int size = strSize + string.len();
@@ -263,21 +231,15 @@ public:
 		assert(strc);
 
 		int len_strc = strLen(strc);
-		//std::cout << len_strc << std::endl;
 		int* arr = new int[strSize];
 		if (str[0] == strc[0])
 			arr[0] = 1;
 		else
 			arr[0] = 0;
-		//std::cout << 'm' << arr[0] << std::endl;
 		for (int i = 1; i < strSize; ++i)
 		{
-			//std::cout << str[i] << std::endl;
-			//std::cout << i - 1 << 'm' << arr[i - 1] << std::endl;
-			//std::cout << str[i - 1] << ' ' << arr[i - 1] << ' ' << len_strc << std::endl;
 			if (arr[i - 1] != len_strc)
 			{
-				//std::cout << str[i - 1] << ' ' << arr[i - 1] << ' ' << len_strc << std::endl;
 
 				if (str[i] == strc[arr[i - 1]])
 				{
@@ -310,9 +272,24 @@ public:
 		delete[] arr;
 		return false;
 	}
-};
 
-std::ostream& operator << (std::ostream& streamP, const String& string);
+	String copyPart(int begin, int end)
+	{
+		assert(end > begin);
+		assert(end <= strSize);
+
+		String name(end - begin - 1);
+
+		for (int i = 0; i < (end - begin - 1); i++)
+		{
+			name[i] = (*this)[i + begin];
+		}
+
+		str[end - begin - 1] = '\0';
+
+		return name;
+	}
+};
 
 int strCount(char* str, char n);
 
