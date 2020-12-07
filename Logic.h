@@ -7,6 +7,7 @@
 class Logic;
 
 
+
 class Timer : public GameObject
 {
 protected:
@@ -14,20 +15,9 @@ protected:
 	Logic* logic;
 public:
 
-	Timer(String name, Logic* lg, float t) :time(t), logic(lg)
-	{
-		this->name = name;
-	};
+	Timer(String name, Logic* lg, float t);
 
-	void move(float dt)
-	{
-		time -= dt;
-		if (time < 0)
-		{
-			this->inTheEnd();
-			logic->destructionObject(*this);
-		}
-	}
+	void move(float dt);
 
 	virtual void inTheEnd() = 0;
 };
@@ -37,10 +27,7 @@ class TimerCreateFairBall : public Timer
 public:
 	TimerCreateFairBall(String name, Logic* lg, float t) :Timer(name, lg, t) {};
 
-	void inTheEnd()
-	{
-		logic->createFairBall();
-	}
+	void inTheEnd();
 };
 
 
@@ -184,7 +171,7 @@ public:
 			position = player.position + Vector2f(-18, 8);
 		if (player.getOrientation() == "right")
 			position = player.position + Vector2f(34, 8);
-		assert((player.getOrientation() != "left") && (player.getOrientation() == "right"));
+		assert((player.getOrientation() == "left") || (player.getOrientation() == "right"));
 
 		Vector2f vertexs[8] = { Vector2f(0, 0), Vector2f(0, 8), Vector2f(0, 16), Vector2f(8, 16),
 								Vector2f(16, 16), Vector2f(16, 8), Vector2f(16, 0), Vector2f(8, 0) };
@@ -244,6 +231,31 @@ public:
 			player.changeTexture("right_creating_FB", 0);
 		}
 
-		TimerCreateFairBall TCFB("TCFB", this, 0.4);
+		TimerCreateFairBall* TCFB = new TimerCreateFairBall("TCFB", this, 0.15);
+		storage->AddObject(TCFB);
 	}
 };
+
+
+
+Timer::Timer(String name, Logic* lg, float t)
+{
+	time = t;
+	logic = lg;
+	this->name = name;
+};
+
+void Timer::move(float dt)
+{
+	time -= dt;
+	if (time < 0)
+	{
+		this->inTheEnd();
+		logic->destructionObject(*this);
+	}
+}
+
+void TimerCreateFairBall::inTheEnd()
+{
+	logic->createFairBall();
+}

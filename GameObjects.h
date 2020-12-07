@@ -365,7 +365,7 @@ protected:
 	sf::Texture texture;
 	sf::RectangleShape shape;
 	float timeFromLastChangeImage = 0;
-	float timeBeetweenImages = 5;
+	float timeBeetweenImages = 0.05;
 
 	//Vector2f velosity;
 	//Vector2f changeImpulse = Vector2f(0, 0);
@@ -980,7 +980,7 @@ public:
 
 	void setOrientation(String orient)
 	{
-		assert((orient != "left") && (orient == "right"));
+		assert((orient == "left") || (orient == "right"));
 		orientation = orient;
 	}
 };

@@ -8,16 +8,7 @@
 #include "Manager.h"
 #include "Interface.h"
 
-/*
-void handlingEvent(Camera* camera)
-{
-	sf::Event event;
-	while (camera->pollEvent(event))
-	{
-		if (event.type == sf::Event::Closed)
-			camera->close();
-	}
-}*/
+
 
 int main()
 {
@@ -76,29 +67,52 @@ int main()
 
 
 	String paints[1];
-	paints[0] = "Textures/Player/stand/stand";
+	paints[0] = "Textures/Player/stand/stand.png";
+	//paints[0] = "036.png"
 
-	StorageImages stIm("Test paint", 1, paints);
+	String paintsAnimCreatingFBleft[3];
+	paintsAnimCreatingFBleft[0] = "Textures/Player/creatingFBleft/0.png";
+	paintsAnimCreatingFBleft[1] = "Textures/Player/creatingFBleft/1.png";
+	paintsAnimCreatingFBleft[2] = "Textures/Player/creatingFBleft/2.png";
 
-	Sprite sp(&stIm, 1);
+	String paintsAnimCreatingFBright[3];
+	paintsAnimCreatingFBright[0] = "Textures/Player/creatingFBright/0.png";
+	paintsAnimCreatingFBright[1] = "Textures/Player/creatingFBright/1.png";
+	paintsAnimCreatingFBright[2] = "Textures/Player/creatingFBright/2.png";
+
+	StorageImages stIm[3];
+	stIm[0] = StorageImages("Stand", 1, paints);
+	stIm[1] = StorageImages("left_creating_FB", 3, paintsAnimCreatingFBleft);
+	stIm[2] = StorageImages("right_creating_FB", 3, paintsAnimCreatingFBright);
+
+
+	Sprite sp(stIm, 3);
 
 	Vector2f vertex[16]{ Vector2f(0,  0),  Vector2f(0,  16), Vector2f(0,  32), Vector2f(0,  48),
 						   Vector2f(0,  64), Vector2f(8,  64), Vector2f(16, 64), Vector2f(24, 64),
 						   Vector2f(32, 64), Vector2f(32, 48), Vector2f(32, 32), Vector2f(32, 16),
 						   Vector2f(32, 0),  Vector2f(24, 0),  Vector2f(16, 0),  Vector2f(8,   0) };
 
-	Player Elve("Player", Vector2f(415, 587), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Player Elve("Player", Vector2f(415, 587), &sp, vertex, 16, "Stand", Vector2f(32, 64), Vector2f(16, 32), 1);
 
 	Elve.setVelosity(Vector2f(30, 0));
 
 	storage.AddObject(&Elve);
-}
-	/*
 
-	Knight knight0("knight0", Vector2f(100, 500), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
-	Knight knight1("knight1", Vector2f(200, 100), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
-	Knight knight2("knight2", Vector2f(300, 800), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
-	Knight knight3("knight3", Vector2f(400, 900), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+
+
+
+	String paints1[1];
+	paints1[0] = "036.png";
+
+	StorageImages stImKnife("Test paint", 1, paints1);
+
+	Sprite spKnife(&stImKnife, 1);
+
+	Knight knight0("knight0", Vector2f(100, 500), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Knight knight1("knight1", Vector2f(200, 100), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Knight knight2("knight2", Vector2f(300, 800), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Knight knight3("knight3", Vector2f(400, 900), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 	
 	storage.AddObject(&knight0);
 	storage.AddObject(&knight1);
@@ -209,7 +223,7 @@ int main()
 	};
 	
 	return 0;
-}*/
+}
 
 
 //window.setFramerateLimit(60);

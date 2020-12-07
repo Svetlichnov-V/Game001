@@ -19,14 +19,14 @@ public:
 		{
 			switch (event.type) 
 			{
-			case sf::Event::Closed:
-				camera->close();
+				case sf::Event::Closed:
+					camera->close();
 
-			case sf::Event::MouseButtonPressed:
-			{
-				if (!(logic->isCreatingFB()))
-					logic->beginCreatingFB();
-			}
+				case sf::Event::MouseButtonPressed:
+				{
+					if (!(logic->isCreatingFB()))
+						logic->beginCreatingFB();
+				}
 
 			}
 			//if (event.type == sf::Event::Closed)
