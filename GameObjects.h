@@ -210,7 +210,7 @@ public:
 
 	virtual void draw(Camera* camera) {}
 
-	//virtual void changeTexture(String nameStorage, const int index) {}
+	virtual void changeTexture(String nameStorage, const int index) {}
 
 	//virtual void changeTexture() {}
 	
@@ -248,6 +248,8 @@ public:
 
 	virtual void gravitation(Vector2f g, float dt) {}
 
+	virtual Vector2f getPositionCenter() { return Vector2f(0, 0); }
+
 
 
 	virtual String getOrientation() { return "NULL"; }
@@ -257,6 +259,8 @@ public:
 	virtual int getHitPoints() { return 1; }
 
 	virtual String getTypeName() { return "GameObject"; }
+
+	virtual void setOrientation(String orient) {};
 };
 
 
@@ -973,6 +977,12 @@ public:
 	{
 		return orientation;
 	}
+
+	void setOrientation(String orient)
+	{
+		assert((orient != "left") && (orient == "right"));
+		orientation = orient;
+	}
 };
 
 
@@ -1024,3 +1034,5 @@ public:
 		return "FairBall";
 	}
 };
+
+

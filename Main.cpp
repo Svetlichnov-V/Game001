@@ -6,7 +6,9 @@
 #include "Vector2f.h"
 #include "Logic.h"
 #include "Manager.h"
+#include "Interface.h"
 
+/*
 void handlingEvent(Camera* camera)
 {
 	sf::Event event;
@@ -15,7 +17,7 @@ void handlingEvent(Camera* camera)
 		if (event.type == sf::Event::Closed)
 			camera->close();
 	}
-}
+}*/
 
 int main()
 {
@@ -36,7 +38,9 @@ int main()
 	Logic logic(&storage, &camera, &spFB);
 
 
-	
+	Interface interFace(&camera, &logic);
+
+
 	Vector2f downWallVertexs[4];
 	downWallVertexs[0] = Vector2f(0, 0);
 	downWallVertexs[1] = Vector2f(0, 400);
@@ -68,27 +72,28 @@ int main()
 	rightWallVertexs[3] = Vector2f(400, 0);
 	Wall rightWall("rightWall", Vector2f(1980, 0), rightWallVertexs, 4, Vector2f(0, 1080), 10000);
 	storage.AddObject(&rightWall);
-	
+
 
 
 	String paints[1];
-	paints[0] = "036.png";
+	paints[0] = "Textures/Player/stand/stand";
 
 	StorageImages stIm("Test paint", 1, paints);
 
 	Sprite sp(&stIm, 1);
 
-	Vector2f vertex[16]{   Vector2f(0,  0),  Vector2f(0,  16), Vector2f(0,  32), Vector2f(0,  48),
+	Vector2f vertex[16]{ Vector2f(0,  0),  Vector2f(0,  16), Vector2f(0,  32), Vector2f(0,  48),
 						   Vector2f(0,  64), Vector2f(8,  64), Vector2f(16, 64), Vector2f(24, 64),
 						   Vector2f(32, 64), Vector2f(32, 48), Vector2f(32, 32), Vector2f(32, 16),
 						   Vector2f(32, 0),  Vector2f(24, 0),  Vector2f(16, 0),  Vector2f(8,   0) };
 
-	Player Elve ("Player",  Vector2f(415, 587), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
+	Player Elve("Player", Vector2f(415, 587), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 
 	Elve.setVelosity(Vector2f(30, 0));
 
 	storage.AddObject(&Elve);
-
+}
+	/*
 
 	Knight knight0("knight0", Vector2f(100, 500), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 	Knight knight1("knight1", Vector2f(200, 100), &sp, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
@@ -147,7 +152,6 @@ int main()
 		dt = time1 - time2;
 		time2 = time1;
 
-		handlingEvent(&camera);
 
 		drawManager(&camera, &storage, dt);
 		//camera.display();
@@ -199,17 +203,13 @@ int main()
 
 		camera.display();
 
-		if (i == 200)
-		{
-			i = 0;
-			logic.createFairBall();
-		}
+		interFace.work();
+
 		logic.work();
-		i++;
 	};
 	
 	return 0;
-}
+}*/
 
 
 //window.setFramerateLimit(60);

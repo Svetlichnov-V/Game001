@@ -3,6 +3,48 @@
 #include "Storage.h"
 
 
+
+class Logic;
+
+
+class Timer : public GameObject
+{
+protected:
+	float time;
+	Logic* logic;
+public:
+
+	Timer(String name, Logic* lg, float t) :time(t), logic(lg)
+	{
+		this->name = name;
+	};
+
+	void move(float dt)
+	{
+		time -= dt;
+		if (time < 0)
+		{
+			this->inTheEnd();
+			logic->destructionObject(*this);
+		}
+	}
+
+	virtual void inTheEnd() = 0;
+};
+
+class TimerCreateFairBall : public Timer
+{
+public:
+	TimerCreateFairBall(String name, Logic* lg, float t) :Timer(name, lg, t) {};
+
+	void inTheEnd()
+	{
+		logic->createFairBall();
+	}
+};
+
+
+
 String ch(int i)
 {
 	char c = static_cast<char>(i);
@@ -12,6 +54,8 @@ String ch(int i)
 	return String(s);
 }
 
+
+
 class Logic
 {
 	//StdGameObject* fairBalls;
@@ -19,6 +63,7 @@ class Logic
 	Storage* storage;
 	Sprite* sprite;
 	int iter = 1;
+	bool creatingFB = false;
 public:
 	Logic(Storage* st, Camera* cm, Sprite* sp):
 		storage(st),
@@ -125,6 +170,8 @@ public:
 
 	void createFairBall()
 	{
+		creatingFB = false;
+
 		if (iter == 256)
 			iter = 1;
 
@@ -154,7 +201,6 @@ public:
 	bool fairBallIsCollide(GameObject& fb, GameObject& gm)
 	{
 		Vector2f v = fb.isCollide(gm);
-		std::cout << v << '\n';
 		return v.mod();
 	}
 
@@ -169,8 +215,35 @@ public:
 		return (gm.getHitPoints() > 0);
 	}
 
-	void destructionObject(GameObject gm)
+	void destructionObject(GameObject& gm)
 	{
 		storage->DeleteObject(gm.name);
+	}
+
+	bool isCreatingFB()
+	{
+		return creatingFB;
+	}
+
+	void beginCreatingFB()
+	{
+		creatingFB = true;
+		Vector2f mousePosition = sf::Mouse::getPosition();
+		GameObject& player = (*storage)["Player"];
+		Vector2f playerPosition = player.getPositionCenter();
+
+		if ((mousePosition - playerPosition).x < 0)
+		{
+			player.setOrientation("left");
+			player.changeTexture("left_creating_FB", 0);
+		}
+
+		if ((mousePosition - playerPosition).x >= 0)
+		{
+			player.setOrientation("right");
+			player.changeTexture("right_creating_FB", 0);
+		}
+
+		TimerCreateFairBall TCFB("TCFB", this, 0.4);
 	}
 };
