@@ -767,7 +767,7 @@ public:
 };
 
 
-class StationaryCube : public GameObject
+class StationaryGameObject : public GameObject
 {
 
 	Sprite* sprite;
@@ -777,7 +777,7 @@ class StationaryCube : public GameObject
 	sf::Texture texture;
 	sf::RectangleShape shape;
 	float timeFromLastChangeImage = 0;
-	float timeBeetweenImages = 5;
+	float timeBeetweenImages = 0.05;
 
 
 	Vector2f centerMass;
@@ -793,7 +793,7 @@ public:
 		characteristicSize = max(size.x, size.y);
 	}
 
-	StationaryCube(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
+	StationaryGameObject(String name, Vector2f position, Sprite* sprite, Vector2f* vertexs,
 		int numberOfVertexs, String nameFistStImages, Vector2f size, Vector2f centerMass, int mass)
 	{
 		//std::cout << "StdGameObject1" << '\n';
@@ -825,7 +825,7 @@ public:
 		this->setSize(size);
 	}
 
-	StationaryCube(StationaryCube& gameObject)
+	StationaryGameObject(StationaryGameObject& gameObject)
 	{
 		std::cout << "StdGameObject2" << '\n';
 
@@ -846,14 +846,14 @@ public:
 		//this->rightBottomCorrow = position + size;
 	}
 
-	~StationaryCube()
+	~StationaryGameObject()
 	{
 		//std::cout << "dStdGameObject : " << name << '\n';
 
 		delete[] vertexs;
 	}
 
-	StationaryCube& operator = (StationaryCube& gameObject)
+	StationaryGameObject& operator = (StationaryGameObject& gameObject)
 	{
 		delete[] vertexs;
 		sprite = gameObject.sprite;

@@ -7,6 +7,7 @@
 #include "Logic.h"
 #include "Manager.h"
 #include "Interface.h"
+#include "Buns.h"
 
 
 
@@ -21,15 +22,16 @@ int main()
 
 	String paintsFairBalls[1];
 	paintsFairBalls[0] = "fairBall.png";
-
 	StorageImages stImFB[2]{ StorageImages("left", 1, paintsFairBalls), StorageImages("right", 1, paintsFairBalls) };
-
 	Sprite spFB(stImFB, 2);
-
 	Logic logic(&storage, &camera, &spFB);
 
 
 	Interface interFace(&camera, &logic);
+
+
+	Physics_constants physics(Vector2f(0, 10));
+	Manager manager(&storage, &camera, &physics);
 
 
 	Vector2f downWallVertexs[4];
@@ -113,7 +115,7 @@ int main()
 	Knight knight1("knight1", Vector2f(200, 100), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 	Knight knight2("knight2", Vector2f(300, 800), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
 	Knight knight3("knight3", Vector2f(400, 900), &spKnife, vertex, 16, "Test paint", Vector2f(32, 64), Vector2f(16, 32), 1);
-	
+
 	storage.AddObject(&knight0);
 	storage.AddObject(&knight1);
 	storage.AddObject(&knight2);
@@ -127,16 +129,16 @@ int main()
 
 	Sprite spCube(&stImCube, 1);
 
-	Vector2f vertexCube[4]{  Vector2f(0,  0) , Vector2f(0,  32),  Vector2f (32, 32), Vector2f(32, 0)};
+	Vector2f vertexCube[4]{ Vector2f(0,  0) , Vector2f(0,  32),  Vector2f(32, 32), Vector2f(32, 0) };
 
-	StationaryCube cube0("Cube1", Vector2f(539, 687), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube1("Cube2", Vector2f(600, 800), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube2("Cube3", Vector2f(1200, 700), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube3("Cube4", Vector2f(1800, 500), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube4("Cube5", Vector2f(800, 900), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube5("Cube6", Vector2f(700, 950), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube6("Cube7", Vector2f(650, 650), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
-	StationaryCube cube7("Cube8", Vector2f(200, 800), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube0("Cube1", Vector2f(539, 687) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube1("Cube2", Vector2f(600, 800) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube2("Cube3", Vector2f(1200, 700), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube3("Cube4", Vector2f(1800, 500), &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube4("Cube5", Vector2f(800, 900) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube5("Cube6", Vector2f(700, 950) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube6("Cube7", Vector2f(650, 650) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
+	StationaryGameObject cube7("Cube8", Vector2f(200, 800) , &spCube, vertexCube, 4, "Cube Images", Vector2f(32, 32), Vector2f(16, 16), 100000);
 
 	storage.AddObject(&cube0);
 	storage.AddObject(&cube1);
@@ -146,94 +148,23 @@ int main()
 	storage.AddObject(&cube6);
 	storage.AddObject(&cube5);
 	storage.AddObject(&cube7);
-	
-	Vector2f g (0, 10);
 
-	sf::Clock clock;
-	int time = clock.getElapsedTime().asMilliseconds() + 400;
-	srand(time);
+	Vector2f g(0, 10);
 
-	float time1 = clock.getElapsedTime().asSeconds();
-	float time2 = clock.getElapsedTime().asSeconds();
-
+	Clock clock;
 	float dt;
-
-	int i = 0;
 
 	while (camera.isOpen())
 	{
-		time1 = clock.getElapsedTime().asSeconds();
-		dt = time1 - time2;
-		time2 = time1;
+		dt = clock.getDefTime();
 
-
-		drawManager(&camera, &storage, dt);
-		//camera.display();
-
-		Iterator iter5(&storage);
-		while (true)
-		{
-			GameObject& gameObject = iter5.stepIteration();
-			if (gameObject.name == "NULL")
-				break;
-			gameObject.nullChangeImpulse();
-		}
-
-		Iterator iter3(&storage);
-		while (true)
-		{
-			GameObject& gameObject = iter3.stepIteration();
-			if (gameObject.name == "NULL")
-				break;
-			gameObject.gravitation(g, dt);
-		}
-
-		Iterator iter2(&storage);
-		while (true)
-		{
-			GameObject& gameObject = iter2.stepIteration();
-			if (gameObject.name == "NULL")
-				break;
-			Iterator iter1(&storage);
-			while (true)
-			{
-				GameObject& gObj = iter1.stepIteration();
-				if (gObj.name == "NULL")
-					break;
-				Vector2f v = gameObject.isCollide(gObj);
-				gameObject.resolutionCollision(gObj, v);
-			}
-		}
-
-		Iterator iter4(&storage);
-		while(true)
-		{
-			GameObject& gameObject = iter4.stepIteration();
-			if (gameObject.name == "NULL")
-				break;
-			gameObject.move(dt);
-			gameObject.changeVelosity();
-		}
-
-		camera.display();
+		manager.draw(dt);
+		manager.physics(dt);
 
 		interFace.work();
 
 		logic.work();
 	};
-	
+
 	return 0;
 }
-
-
-//window.setFramerateLimit(60);
-
-/*
-int main()
-{
-	String str("hyj");
-	String s = ch(2);
-	std::cout << s << ' ' << s.len() << '\n';
-	str += s;
-	std::cout << str << ' ' << str.len() << '\n';
-}*/

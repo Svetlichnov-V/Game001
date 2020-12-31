@@ -28,9 +28,17 @@ public:
 						logic->beginCreatingFB();
 				}
 
+				case sf::Event::KeyPressed:
+				{
+					switch (event.key.code)
+					{
+						case sf::Keyboard::D:
+							logic->moveRight();
+						case sf::Keyboard::A:
+							logic->moveLeft();
+					}
+				}
 			}
-			//if (event.type == sf::Event::Closed)
-			//	camera->close();
 
 		}
 	}

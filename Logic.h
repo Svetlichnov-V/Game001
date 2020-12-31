@@ -51,6 +51,7 @@ class Logic
 	Sprite* sprite;
 	int iter = 1;
 	bool creatingFB = false;
+	String process = "Stay";
 public:
 	Logic(Storage* st, Camera* cm, Sprite* sp):
 		storage(st),
@@ -67,45 +68,6 @@ public:
 	{
 		this->processingFairBalls();
 		this->deleteObjects();
-		/*
-		Iterator iter(storage);
-		while (true)
-		{
-			GameObject& gameObject = iter.stepIteration();
-
-			if (gameObject.name == "NULL")
-				break;
-			
-			if (gameObject.name.len() != 10)
-				continue;
-
-			String name = gameObject.name.copyPart(0, 9);
-
-			std::cout << gameObject.name << ' ' << name << '\n';
-
-			if (name != "fairBall")
-				continue;
-
-			//std::cout << gameObject.name << ' ' << name << '\n';
-
-			std::cout << "jght" << '\n';
-			Iterator iter1(storage);
-			while (true)
-			{
-				GameObject& gObj = iter1.stepIteration();
-				if (gObj.name == "NULL")
-					break;
-				
-				bool collide = this->fairBallIsCollide(gameObject, gObj);
-				std::cout << collide << '\n';
-				if (collide)
-				{
-					this->explosionFairBall(gameObject, gObj);
-					if (!(this->checkIsLive(gObj)))
-						this->destructionObject(gObj);
-				}
-			}
-		}*/
 	}
 
 	void processingFairBalls()
@@ -166,11 +128,16 @@ public:
 		iter += 1;
 
 		Vector2f position;
+
 		GameObject& player = (*storage)["Player"];
+
 		if (player.getOrientation() == "left")
 			position = player.position + Vector2f(-18, 8);
 		if (player.getOrientation() == "right")
 			position = player.position + Vector2f(34, 8);
+
+		player.changeTexture("Stand", 0);
+
 		assert((player.getOrientation() == "left") || (player.getOrientation() == "right"));
 
 		Vector2f vertexs[8] = { Vector2f(0, 0), Vector2f(0, 8), Vector2f(0, 16), Vector2f(8, 16),
@@ -233,6 +200,20 @@ public:
 
 		TimerCreateFairBall* TCFB = new TimerCreateFairBall("TCFB", this, 0.15);
 		storage->AddObject(TCFB);
+	}
+
+	void moveRight()
+	{
+		GameObject player = (*storage)["Player"];
+		process = "moveRight";
+		player.setVelosity(Vector2f(10, 0));
+		player.setOrientation("right");
+		player.changeTexture("move_right", 0);
+	}
+
+	void processingPlayer()
+	{
+
 	}
 };
 
